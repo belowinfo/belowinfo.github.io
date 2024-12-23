@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Симулятор пантеры</title>
+  <title>Симулятор маленькой киски</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,26 +13,21 @@
       padding: 0;
       line-height: 1.6;
     }
-
     h1, h2 {
       color: #ffffff;
     }
-
     a {
       color: #bb86fc;
       text-decoration: none;
     }
-
     a:hover {
       text-decoration: underline;
     }
-
     .container {
       padding: 20px;
       max-width: 1200px;
       margin: 0 auto;
     }
-
     .logs, .earnings {
       background: #1e1e1e;
       border-radius: 8px;
@@ -40,28 +35,23 @@
       padding: 20px;
       margin-bottom: 20px;
     }
-
     .logs {
       height: 300px;
       overflow-y: scroll;
     }
-
     .chart-container {
       height: 300px;
       width: 100%;
     }
-
     .flex {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
     }
-
     .half {
       flex: 1;
       min-width: 300px;
     }
-
     .info {
       background: #1e1e1e;
       border-radius: 8px;
@@ -69,60 +59,47 @@
       text-align: center;
       margin-top: 20px;
     }
-
     .info p {
       margin: 0;
     }
-
     .logs::-webkit-scrollbar {
       width: 8px;
     }
-
     .logs::-webkit-scrollbar-thumb {
       background: #bb86fc;
       border-radius: 4px;
     }
-
     .logs::-webkit-scrollbar-track {
       background: #2c2c2c;
     }
-
     h1 {
       font-size: 2rem;
       text-align: center;
     }
-
     h2 {
       font-size: 1.5rem;
     }
-
     p {
       font-size: 1rem;
     }
-
     @media (max-width: 768px) {
       h1 {
         font-size: 1.8rem;
       }
-
       h2 {
         font-size: 1.4rem;
       }
-
       p {
         font-size: 0.9rem;
       }
     }
-
     .form-group {
       margin-bottom: 10px;
     }
-
     label {
       display: block;
       margin-bottom: 5px;
     }
-
     input[type="number"] {
       width: 100%;
       padding: 8px;
@@ -131,11 +108,9 @@
       background-color: #1e1e1e;
       color: #e0e0e0;
     }
-
     input[type="number"]::placeholder {
       color: #757575;
     }
-
     button {
       padding: 10px 20px;
       background-color: #bb86fc;
@@ -145,7 +120,6 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-
     button:hover {
       background-color: #9f73e6;
     }
@@ -154,45 +128,44 @@
 </head>
 <body>
   <div class="container">
-    <h1>Симулятор пантеры</h1>
+    <h1>Симулятор маленькой киски</h1>
     <div class="flex">
       <div class="logs half">
-        <h2>Логи</h2>
+        <h2>Игры начинаются</h2>
         <div id="logContainer"></div>
       </div>
       <div class="earnings half">
-        <h2>Заработок</h2>
         <canvas id="earningsChart"></canvas>
       </div>
     </div>
     <div class="info">
       <div class="form-group">
-        <label for="totalDays">Всего дней симуляции:</label>
+        <label for="totalDays">Дней симуляции:</label>
         <input type="number" id="totalDays" value="100">
       </div>
       <div class="form-group">
-        <label for="pricePeriodic">Цена за периодического котенка (руб):</label>
+        <label for="pricePeriodic">Периодический котенок приносит (руб):</label>
         <input type="number" id="pricePeriodic" value="10000">
       </div>
       <div class="form-group">
-        <label for="priceEnthusiastic">Цена за постоянного котенка (руб):</label>
+        <label for="priceEnthusiastic">Постоянный котенок приносит (руб):</label>
         <input type="number" id="priceEnthusiastic" value="20000">
       </div>
       <div class="form-group">
-        <label for="restDays">Дни отдыха:</label>
+        <label for="restDays">Дней отдыха:</label>
         <input type="number" id="restDays" value="3">
       </div>
       <button id="startButton">Старт</button>
-      <p id="gamesCount">Всего игр: 0</p>
       <p id="currentDay">Текущий день: 1</p>
       <p id="periodicKittensCount">Периодических котят: 0</p>
       <p id="enthusiasticKittensCount">Постоянных котят: 0</p>
-      <p id="totalEarnings">Общий заработок: 0 рублей</p>
+      <p id="gamesCount">Всего игр: 0</p>
+      <p id="totalEarnings">Получено: 0 рублей</p>
     </div>
   </div>
 
   <script>
-    let day, totalDays, clients, earnings, lastMeetingDay, nextClientId;
+    let day, totalDays, clients, earnings, lastMeetingDay, nextClientId, totalGames, periodicKittensCount, enthusiasticKittensCount;
     let interval;
     const logContainer = document.getElementById('logContainer');
     const currentDayElement = document.getElementById('currentDay');
@@ -207,7 +180,7 @@
       data: {
         labels: [],
         datasets: [{
-          label: 'Заработок',
+          label: 'Получено',
           data: [],
           borderColor: '#bb86fc',
           backgroundColor: 'rgba(187, 134, 252, 0.2)',
@@ -235,6 +208,7 @@
     function resetSimulation() {
       clearInterval(interval);
       day = 1;
+      totalGames = 0;
       totalDays = parseInt(document.getElementById('totalDays').value, 10);
       clients = [];
       earnings = 0;
@@ -247,8 +221,8 @@
       earningsChart.data.datasets[0].data = [];
       earningsChart.update();
       currentDayElement.textContent = `Текущий день: ${day}`;
-      gamesCountElement.textContent = `Всего игр: ${day - 1}`;
-      totalEarningsElement.textContent = `Общий заработок: ${earnings} рублей`;
+      gamesCountElement.textContent = `Всего игр: ${totalGames}`;
+      totalEarningsElement.textContent = `Получено: ${earnings} рублей`;
       periodicKittensCountElement.textContent = `Периодических котят: ${periodicKittensCount}`;
       enthusiasticKittensCountElement.textContent = `Постоянных котят: ${enthusiasticKittensCount}`;
     }
@@ -265,7 +239,7 @@
     }
 
     function updateChart(day, totalEarnings) {
-      earningsChart.data.labels.push(day);
+      earningsChart.data.labels.push(day.toString());
       earningsChart.data.datasets[0].data.push(totalEarnings);
       earningsChart.update();
     }
@@ -279,13 +253,13 @@
       let kittenPlayedToday = false;
 
       if (!canWork) {
-        actions.push(`Пантера отдыхает. Доступна через ${restDays - (day - lastMeetingDay)} дней.`);
+        actions.push(`Пантера отдыхает с любимым волком. Доступна через ${restDays - (day - lastMeetingDay)} дней.`);
       } else {
         for (let client of clients) {
           if (client.available && !kittenPlayedToday) {
             if (client.type === 'periodic') {
               dayEarnings += pricePeriodic;
-              actions.push(`Поиграла с котенком #${client.id}.`);
+              actions.push(`Поиграла с котенком #${client.id}. Счастливая уснула с счастливым любимым волком.`);
               if (Math.random() < 0.2) {
                 client.type = 'enthusiastic';
                 periodicKittensCount--;
@@ -303,10 +277,10 @@
             kittenPlayedToday = true;
 
             if (client.type === 'periodic' && client.playCount >= getRandomInt(1, 3)) {
-              actions.push(`Котенок #${client.id} ушел.`);
+              actions.push(`Котенок #${client.id} до свидания.`);
               removeClient(client.id);
             } else if (client.type === 'enthusiastic' && client.playCount >= getRandomInt(3, 10)) {
-              actions.push(`Постоянный котенок #${client.id} ушел.`);
+              actions.push(`Постоянный котенок #${client.id} до свидания.`);
               removeClient(client.id);
             }
             break;
@@ -344,10 +318,13 @@
       addLog(day, actions, dayEarnings);
       updateChart(day, earnings);
       currentDayElement.textContent = `Текущий день: ${day}`;
-      gamesCountElement.textContent = `Всего игр: ${day}`;
+      if (kittenPlayedToday) {
+        totalGames++;
+      }
+      gamesCountElement.textContent = `Всего игр: ${totalGames}`;
       periodicKittensCountElement.textContent = `Периодических котят: ${periodicKittensCount}`;
       enthusiasticKittensCountElement.textContent = `Постоянных котят: ${enthusiasticKittensCount}`;
-      totalEarningsElement.textContent = `Общий заработок: ${earnings} рублей`;
+      totalEarningsElement.textContent = `Получено: ${earnings} рублей`;
     }
 
     function getRandomInt(min, max) {
@@ -375,7 +352,7 @@
       interval = setInterval(() => {
         if (day > totalDays) {
           clearInterval(interval);
-          gamesCountElement.textContent = `Всего игр: ${day - 1}`;
+          gamesCountElement.textContent = `Всего игр: ${totalGames}`;
           return;
         }
         simulateDay(pricePeriodic, priceEnthusiastic, restDays);
